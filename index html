@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+        background-image: url('picture.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .calendar {
+            width: 300px;
+            
+            background-color: (255, 255, 255, 0.7); /* White with 70% opacity */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        .calendar-header {
+            display: flex;
+            
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .calendar-header h2 {
+            font-size: 24px;
+            color: white;
+        }
+        .calendar-header h2 {
+            text-shadow: 2px 2px 2px blue;
+        }
+        .calendar-header button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .calendar-header button:hover {
+            background-color: #0056b3;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        .calendar-grid div {
+            padding: 5px;
+            background-color: #f9f9f9;
+            border-radius: 20px;
+            font-size: 5px;
+            cursor: pointer;
+        }
+
+        .calendar-grid div:hover {
+            background-color: #ddd;
+        }
+
+        .calendar-grid .day {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .calendar-grid .today {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .calendar-grid .empty {
+            background-color: transparent;
+        }
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Adjust video to fill the screen */
+            z-index: -1; /* Ensure video is behind other elements */
+        }
+        
+</style>
+<title> calender app</title>
+</head>
+<body>
+    <video id="video-background" autoplay muted loop>
+        <source src="killua.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="calendar">
+        <div class="calendar-header">
+            <button onclick="prevMonth()">Prev</button>
+            <h2 id="calendar-month">April 2025</h2>
+            <button onclick="nextMonth()">Next</button>
+        </div>
+
+        <div class="calendar-grid">
+            <div class="day">Sun</div>
+            <div class="day">Mon</div>
+            <div class="day">Tue</div>
+            <div class="day">Wed</div>
+            <div class="day">Thu</div>
+            <div class="day">Fri</div>
+            <div class="day">Sat</div>
+
+            <!-- Example of filled calendar days -->
+            <div class="empty"></div> <!-- Empty space for the previous month's last days -->
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+            <div>6</div>
+            <div>7</div>
+            <div>8</div>
+            <div>9</div>
+            <div>10</div>
+            <div class="today">11</div>
+            <div>12</div>
+            <div>13</div>
+            <div>14</div>
+            <div>15</div>
+            <div>16</div>
+            <div>17</div>
+            <div>18</div>
+            <div>19</div>
+            <div>20</div>
+            <div>21</div>
+            <div>22</div>
+            <div>23</div>
+            <div>24</div>
+            <div>25</div>
+            <div>26</div>
+            <div>27</div>
+            <div>28</div>
+            <div>29</div>
+            <div>30</div>
+        </div>
+    </div>
+    <script>
+        // Simple JavaScript for changing the month
+        let currentMonth = 3; // Starting with April (0-based index, 3 is April)
+        let currentYear = 2025;
+
+        function updateCalendar() {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const monthName = monthNames[currentMonth];
+            document.getElementById("calendar-month").innerText = `${monthName} ${currentYear}`;
+
+            // Clear existing calendar
+            let calendarGrid = document.querySelector('.calendar-grid');
+            calendarGrid.innerHTML = `
+                <div class="day">Sun</div>
+                <div class="day">Mon</div>
+                <div class="day">Tue</div>
+                <div class="day">Wed</div>
+                <div class="day">Thu</div>
+                <div class="day">Fri</div>
+                <div class="day">Sat</div>
+            `;
+
+            // Get the first day of the month and the number of days in the month
+            let firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Fill the grid with the days of the month
+            for (let i = 0; i < firstDay; i++) {
+                calendarGrid.innerHTML += `<div class="empty"></div>`; // Empty cells for previous month
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const isToday = (i === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear());
+                calendarGrid.innerHTML += `<div class="${isToday ? 'today' : ''}">${i}</div>`;
+            }
+        }
+
+        function prevMonth() {
+            if (currentMonth === 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else {
+                currentMonth--;
+            }
+            updateCalendar();
+        }
+
+        function nextMonth() {
+            if (currentMonth === 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else {
+                currentMonth++;
+            }
+            updateCalendar();
+        }
+
+        // Initialize the calendar
+        updateCalendar();
+    </script>
+
+</body>
+
+</html>
